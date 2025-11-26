@@ -25,34 +25,41 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-// Enable CORS
+// Middleware
 app.UseCors("AllowAll");
 
-// Serve static files and default index.html
-app.UseDefaultFiles();
+// Remove HTTPS redirection for cloud deployment (they handle SSL)
+// app.UseHttpsRedirection();
+
+app.UseAuthorization();
+
+// Serve static files
 app.UseStaticFiles();
 
-// SPA-style fallback for clean URLs (/doctors, /patients, /receptionists)
+// SPA-style fallback to serve any .html file in wwwroot
 app.Use(async (context, next) =>
 {
-    await next();
+    var path = context.Request.Path.Value;
 
-    // If 404 and no file extension, serve index.html
-    if (context.Response.StatusCode == 404 && 
-        !System.IO.Path.HasExtension(context.Request.Path.Value))
+    // If request has no extension, try to serve a corresponding .html file
+    if (!System.IO.Path.HasExtension(path))
     {
-        context.Request.Path = "/index.html";
-        await next();
+        var file = $"wwwroot{path}.html";
+        if (System.IO.File.Exists(file))
+        {
+            context.Response.ContentType = "text/html";
+            await context.Response.SendFileAsync(file);
+            return;
+        }
     }
-});
 
-app.UseRouting();
-app.UseAuthorization();
+    await next();
+});
 
 // Map API endpoints
 app.MapControllers();
 
-// Apply EF Core migrations on startup
+// Apply migrations on startup (optional, auto-create tables)
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
@@ -67,6 +74,5 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
-// Run the app
 app.Run();
 Console.WriteLine("Application started.");
