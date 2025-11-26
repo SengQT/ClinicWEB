@@ -28,19 +28,28 @@ var app = builder.Build();
 // Middleware
 app.UseCors("AllowAll");
 
-// Remove HTTPS redirection for cloud deployment (they handle SSL)
-// app.UseHttpsRedirection();
+// Serve static files
+app.UseDefaultFiles();   // serves index.html at root
+app.UseStaticFiles();    // serves other HTML/CSS/JS
 
+// Optional: fallback for SPA (if you want unknown paths to go to index.html)
+// app.Use(async (context, next) =>
+// {
+//     await next();
+//     if (context.Response.StatusCode == 404 && !System.IO.Path.HasExtension(context.Request.Path.Value))
+//     {
+//         context.Request.Path = "/index.html";
+//         await next();
+//     }
+// });
+
+app.UseRouting();
 app.UseAuthorization();
-
-// Serve frontend
-app.UseDefaultFiles();
-app.UseStaticFiles();
 
 // Map API endpoints
 app.MapControllers();
 
-// Apply migrations on startup (optional, auto-create tables)
+// Apply migrations on startup
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
@@ -56,4 +65,3 @@ using (var scope = app.Services.CreateScope())
 }
 
 app.Run();
-Console.WriteLine("Application started.");
