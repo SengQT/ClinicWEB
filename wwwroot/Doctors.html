@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctors - Clinic Management System</title>
+    <link rel="stylesheet" href="ClinicFrontend/css/style.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <h1>🏥 Clinic Management System</h1>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="patients.html">Patients</a></li>
+                <li><a href="doctors.html" class="active">Doctors</a></li>
+                <li><a href="receptionists.html">Receptionists</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="page-header">
+            <h2>👨‍⚕️ Doctor Management</h2>
+            <p>Add and manage doctor profiles</p>
+        </div>
+
+        <!-- Add Doctor Form -->
+        <div class="form-section">
+            <h3>Add New Doctor</h3>
+            <form id="doctorForm">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="doctorName">Name *</label>
+                        <input type="text" id="doctorName" name="name" required placeholder="Enter doctor name">
+                    </div>
+                    <div class="form-group">
+                        <label for="doctorSpecialty">Specialty *</label>
+                        <input type="text" id="doctorSpecialty" name="specialty" required placeholder="e.g., Cardiology, Pediatrics">
+                    </div>
+                </div>
+                <button type="submit" class="btn-submit">Add Doctor</button>
+            </form>
+            <!-- Message container for success/error messages -->
+            <div id="messageContainer"></div>
+        </div>
+
+        <!-- Search Box -->
+        <div class="search-section">
+            <input type="text" id="searchInput" class="search-box" placeholder="🔍 Search doctors by ID, Name, or Specialty...">
+        </div>
+
+        <!-- Doctors Table -->
+        <div class="table-section">
+            <h3>Doctor Records</h3>
+            <div class="table-container">
+                <table id="doctorsTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Specialty</th>
+                            <th>Picture</th>
+                        </tr>
+                    </thead>
+                    <tbody id="doctorsTableBody">
+                        <!-- Table rows will be populated by JavaScript -->
+                        <tr>
+                            <td colspan="4" class="loading">Loading doctors...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2024 Clinic Management System. All rights reserved.</p>
+    </footer>
+
+    <!-- Link to JavaScript file for this page -->
+    <script src="ClinicFrontend/js/doctors.js"></script>
+</body>
+</html>

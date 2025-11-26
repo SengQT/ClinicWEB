@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Receptionists - Clinic Management System</title>
+    <link rel="stylesheet" href="ClinicFrontend/css/style.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <h1>🏥 Clinic Management System</h1>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="patients.html">Patients</a></li>
+                <li><a href="doctors.html">Doctors</a></li>
+                <li><a href="receptionists.html" class="active">Receptionists</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="page-header">
+            <h2>💼 Receptionist Management</h2>
+            <p>Add and manage receptionist information</p>
+        </div>
+
+        <!-- Add Receptionist Form -->
+        <div class="form-section">
+            <h3>Add New Receptionist</h3>
+            <form id="receptionistForm">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="receptionistName">Name *</label>
+                        <input type="text" id="receptionistName" name="name" required placeholder="Enter receptionist name">
+                    </div>
+                    <div class="form-group">
+                        <label for="receptionistShift">Shift *</label>
+                        <input type="text" id="receptionistShift" name="shift" required placeholder="e.g., Morning, Evening, Night">
+                    </div>
+                    <div class="form-group">
+                        <label for="receptionistSalary">Salary *</label>
+                        <input type="number" id="receptionistSalary" name="salary" min="0" step="0.01" required placeholder="Enter salary">
+                    </div>
+                </div>
+                <button type="submit" class="btn-submit">Add Receptionist</button>
+            </form>
+            <!-- Message container for success/error messages -->
+            <div id="messageContainer"></div>
+        </div>
+
+        <!-- Search Box -->
+        <div class="search-section">
+            <input type="text" id="searchInput" class="search-box" placeholder="🔍 Search receptionists by ID, Name, Shift, or Salary...">
+        </div>
+
+        <!-- Receptionists Table -->
+        <div class="table-section">
+            <h3>Receptionist Records</h3>
+            <div class="table-container">
+                <table id="receptionistsTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Shift</th>
+                            <th>Salary</th>
+                            <th>Picture</th>
+                        </tr>
+                    </thead>
+                    <tbody id="receptionistsTableBody">
+                        <!-- Table rows will be populated by JavaScript -->
+                        <tr>
+                            <td colspan="5" class="loading">Loading receptionists...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2024 Clinic Management System. All rights reserved.</p>
+    </footer>
+
+    <!-- Link to JavaScript file for this page -->
+    <script src="clinicFrontend/js/receptionists.js"></script>
+</body>
+</html>
