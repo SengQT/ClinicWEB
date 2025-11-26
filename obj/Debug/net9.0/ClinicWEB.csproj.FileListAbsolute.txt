@@ -317,3 +317,5 @@ C:\Users\SENG\Desktop\ClinicWEB\obj\Debug\net9.0\ref\ClinicWEB.dll
 C:\Users\SENG\Desktop\ClinicWEB\obj\Debug\net9.0\compressed\9lvfwsr6nq-dp6qgue480.gz
 C:\Users\SENG\Desktop\ClinicWEB\obj\Debug\net9.0\compressed\ouujnosdvs-g1ib0lgzm9.gz
 C:\Users\SENG\Desktop\ClinicWEB\obj\Debug\net9.0\compressed\61ngd6igiq-vmh6wsj2gh.gz
+C:\Users\SENG\Desktop\ClinicWEB\bin\Debug\net9.0\Npgsql.dll
+C:\Users\SENG\Desktop\ClinicWEB\bin\Debug\net9.0\Npgsql.EntityFrameworkCore.PostgreSQL.dll

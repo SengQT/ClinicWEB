@@ -1,42 +1,58 @@
 using ClinicWEB.Data;
-using ClinicWEB.Controllers;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// ===== Add Services =====
+// Read port from environment variable (for Render/Railway/etc.)
+var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
+builder.WebHost.UseUrls($"http://0.0.0.0:{port}");
 
 // Add controllers
 builder.Services.AddControllers();
 
-// Add DbContext (replace with your connection string)
+// Add DbContext using PostgreSQL
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Enable CORS for frontend
+// Allow any origin for deployment
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowFrontend",
-        policy => policy
-            .WithOrigins("http://localhost:3000", "http://127.0.0.1:5500") // adjust your frontend URL
-            .AllowAnyMethod()
-            .AllowAnyHeader());
+    options.AddPolicy("AllowAll", policy =>
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader());
 });
 
-// ===== Build App =====
 var app = builder.Build();
 
-// ===== Middleware =====
-app.UseCors("AllowFrontend");     // Enable CORS
-app.UseHttpsRedirection();        // Redirect HTTP -> HTTPS (optional)
-app.UseAuthorization();           // Authorization if needed
+// Middleware
+app.UseCors("AllowAll");
 
-// Serve static files (index.html, JS, CSS)
-app.UseDefaultFiles();  // looks for index.html
-app.UseStaticFiles();   // serve wwwroot content
+// Remove HTTPS redirection for cloud deployment (they handle SSL)
+// app.UseHttpsRedirection();
 
-// Map controllers (API endpoints)
+app.UseAuthorization();
+
+// Serve frontend
+app.UseDefaultFiles();
+app.UseStaticFiles();
+
+// Map API endpoints
 app.MapControllers();
 
-// Run app
+// Apply migrations on startup (optional, auto-create tables)
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    try
+    {
+        db.Database.Migrate();
+        Console.WriteLine("Database migration completed successfully.");
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Database migration failed: {ex.Message}");
+    }
+}
+
 app.Run();
