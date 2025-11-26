@@ -11,7 +11,7 @@
    IMPORTANT: Make sure CORS is enabled in your ASP.NET Core API
    to allow requests from this frontend.
 */
-const API_BASE_URL = ''; // Update this with your API URL
+const API_BASE_URL = 'https://clinicweb-isjj.onrender.com'; // Update this with your API URL
 const PATIENTS_API_URL = `${API_BASE_URL}/api/patients`;
 
 /* ============================================
