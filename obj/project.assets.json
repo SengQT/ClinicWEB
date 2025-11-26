@@ -4711,23 +4711,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Hokse\\.nuget\\packages\\": {},
+    "C:\\Users\\SENG\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Hokse\\Desktop\\ClinicWEB\\ClinicWEB.csproj",
+      "projectUniqueName": "C:\\Users\\SENG\\Desktop\\ClinicWEB\\ClinicWEB.csproj",
       "projectName": "ClinicWEB",
-      "projectPath": "C:\\Users\\Hokse\\Desktop\\ClinicWEB\\ClinicWEB.csproj",
-      "packagesPath": "C:\\Users\\Hokse\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Hokse\\Desktop\\ClinicWEB\\obj\\",
+      "projectPath": "C:\\Users\\SENG\\Desktop\\ClinicWEB\\ClinicWEB.csproj",
+      "packagesPath": "C:\\Users\\SENG\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\SENG\\Desktop\\ClinicWEB\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\Hokse\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\SENG\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
@@ -4794,7 +4794,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.305/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.307/PortableRuntimeIdentifierGraph.json"
       }
     }
   }
