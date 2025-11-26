@@ -55,46 +55,23 @@ document.addEventListener('DOMContentLoaded', function() {
    ]
 */
 async function loadReceptionists() {
-    const tableBody = document.getElementById('receptionistsTableBody');
-    
     try {
-        tableBody.innerHTML = '<tr><td colspan="5" class="loading">Loading receptionists...</td></tr>';
+        const tableBody = document.getElementById('receptionistsTableBody');
+        tableBody.innerHTML = '<tr><td colspan="4">Loading...</td></tr>';
 
-        allReceptionists = [];
+        const res = await fetch(RECEPTIONS_API_URL);
+        if (!res.ok) throw new Error("Failed to fetch receptionist data");
 
-        const response = await fetch(RECEPTIONISTS_API_URL, { method: 'GET' });
-        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-        const receptionists = await response.json();
-
-        const PAGE_SIZE = 10;
-        const FETCH_DELAY = 200;
-        const totalPages = Math.ceil(receptionists.length / PAGE_SIZE);
-
-        tableBody.innerHTML = '';
-
-        for (let page = 0; page < totalPages; page++) {
-            const start = page * PAGE_SIZE;
-            const end = start + PAGE_SIZE;
-            const batch = receptionists.slice(start, end);
-
-            allReceptionists.push(...batch);
-
-            renderReceptionistsBatch(batch);
-
-            await new Promise(resolve => setTimeout(resolve, FETCH_DELAY));
-        }
+        allReceptionists = await res.json();  // store all
+        renderReceptions(allReceptionists);   // render once
 
     } catch (error) {
-        console.error('Error loading receptionists:', error);
-        tableBody.innerHTML = `
-            <tr>
-                <td colspan="5" class="error-message">
-                    ✗ Failed to load receptionists: ${error.message}
-                </td>
-            </tr>
-        `;
+        console.error(error);
+        document.getElementById('receptionistsTableBody').innerHTML =
+            '<tr><td colspan="4">Error loading receptionists</td></tr>';
     }
 }
+
 
 
 /* ============================================
@@ -264,33 +241,18 @@ async function handleFormSubmit(event) {
    Filters the receptionists table based on search input.
    Searches across all columns: ID, Name, Shift, and Salary.
 */
-function handleSearch(event) {
-    const searchTerm = event.target.value.toLowerCase().trim();
-    
-    // If search is empty, show all receptionists
-    if (searchTerm === '') {
-        renderReceptionists(allReceptionists);
-        return;
-    }
-    
-    // Filter receptionists based on search term
-    const filteredReceptionists = allReceptionists.filter(receptionist => {
-        // Convert all searchable fields to lowercase strings
-        const id = receptionist.id.toString().toLowerCase();
-        const name = receptionist.name.toLowerCase();
-        const shift = receptionist.shift.toLowerCase();
-        const salary = receptionist.salary.toString().toLowerCase();
-        
-        // Check if any field contains the search term
-        return id.includes(searchTerm) || 
-               name.includes(searchTerm) || 
-               shift.includes(searchTerm) || 
-               salary.includes(searchTerm);
-    });
-    
-    // Render filtered results
-    renderReceptionists(filteredReceptionists);
-}
+document.getElementById('receptionistSearchBar').addEventListener('keyup', function () {
+    const keyword = this.value.toLowerCase();
+
+    const filtered = allReceptionists.filter(r =>
+        r.receptionistName.toLowerCase().includes(keyword) ||
+        r.receptionistPhone.toLowerCase().includes(keyword) ||
+        r.receptionistAddress.toLowerCase().includes(keyword)
+    );
+
+    renderReceptions(filtered);
+});
+
 
 /* ============================================
    UTILITY FUNCTIONS
@@ -333,6 +295,8 @@ function showMessage(message, type) {
     }, 5000);
 }
 
+
+loadReceptionists();
 /* ============================================
    API INTEGRATION NOTES
    ============================================

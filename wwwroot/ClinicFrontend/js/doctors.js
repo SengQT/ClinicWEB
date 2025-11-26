@@ -60,30 +60,17 @@ async function loadDoctors() {
     try {
         tableBody.innerHTML = '<tr><td colspan="4" class="loading">Loading doctors...</td></tr>';
 
-        allDoctors = [];
-
-        // Fetch all doctors from API
+        // Fetch doctors
         const response = await fetch(DOCTORS_API_URL, { method: 'GET' });
         if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+
         const doctors = await response.json();
 
-        const PAGE_SIZE = 10; // Number per batch
-        const FETCH_DELAY = 200; // ms between batches
-        const totalPages = Math.ceil(doctors.length / PAGE_SIZE);
+        // Save all data for searching
+        allDoctors = doctors;
 
-        tableBody.innerHTML = ''; // Clear loading
-
-        for (let page = 0; page < totalPages; page++) {
-            const start = page * PAGE_SIZE;
-            const end = start + PAGE_SIZE;
-            const batch = doctors.slice(start, end);
-
-            allDoctors.push(...batch);
-
-            renderDoctorsBatch(batch);
-
-            await new Promise(resolve => setTimeout(resolve, FETCH_DELAY));
-        }
+        // Render once
+        renderDoctors(allDoctors);
 
     } catch (error) {
         console.error('Error loading doctors:', error);
@@ -96,6 +83,7 @@ async function loadDoctors() {
         `;
     }
 }
+
 
 
 /* ============================================

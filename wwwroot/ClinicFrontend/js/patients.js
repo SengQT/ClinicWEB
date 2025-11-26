@@ -55,54 +55,23 @@ document.addEventListener('DOMContentLoaded', function() {
    ]
 */
 async function loadPatients() {
-    const tableBody = document.getElementById('patientsTableBody');
-    
     try {
-        tableBody.innerHTML = '<tr><td colspan="4" class="loading">Loading patients...</td></tr>';
+        const tableBody = document.getElementById('patientsTableBody');
+        tableBody.innerHTML = '<tr><td colspan="4">Loading...</td></tr>';
 
-        // Clear global state
-        allPatients = [];
+        const res = await fetch(PATIENTS_API_URL);
+        if (!res.ok) throw new Error("Failed to fetch patient data");
 
-        // Fetch total patients first to calculate pages
-        const response = await fetch(PATIENTS_API_URL, { method: 'GET' });
-        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-        const patients = await response.json();
-
-        const PAGE_SIZE = 10;  // Number of patients per batch
-        const FETCH_DELAY = 200; // Delay in ms between batches
-        const totalPatients = patients.length;
-        const totalPages = Math.ceil(totalPatients / PAGE_SIZE);
-
-        tableBody.innerHTML = ''; // Clear loading message
-
-        // Fetch patients in batches
-        for (let page = 0; page < totalPages; page++) {
-            const start = page * PAGE_SIZE;
-            const end = start + PAGE_SIZE;
-            const batch = patients.slice(start, end);
-
-            // Add to global state
-            allPatients.push(...batch);
-
-            // Render batch in table
-            renderPatientsBatch(batch);
-
-            // Small delay to avoid overloading
-            await new Promise(resolve => setTimeout(resolve, FETCH_DELAY));
-        }
+        allPatients = await res.json();  // store all
+        renderPatients(allPatients);     // render once
 
     } catch (error) {
-        console.error('Error loading patients:', error);
-        tableBody.innerHTML = `
-            <tr>
-                <td colspan="4" class="error-message">
-                    ✗ Failed to load patients: ${error.message}
-                    <br><small>Please check your API connection and CORS settings.</small>
-                </td>
-            </tr>
-        `;
+        console.error(error);
+        document.getElementById('patientsTableBody').innerHTML =
+            '<tr><td colspan="4">Error loading patients</td></tr>';
     }
 }
+
 
 
 /* ============================================
@@ -142,6 +111,21 @@ function renderPatients(patients) {
         tableBody.appendChild(row);
     });
 }
+
+document.getElementById('patientSearchBar').addEventListener('keyup', function () {
+    const keyword = this.value.toLowerCase();
+
+    const filtered = allPatients.filter(p =>
+        p.patientName.toLowerCase().includes(keyword) ||
+        p.patientPhone.toLowerCase().includes(keyword) ||
+        p.emergencyPhone.toLowerCase().includes(keyword) ||
+        p.gender.toLowerCase().includes(keyword) ||
+        p.age.toString().includes(keyword)
+    );
+
+    renderPatients(filtered);
+});
+
 
 function renderPatientsBatch(batch) {
     const tableBody = document.getElementById('patientsTableBody');
@@ -306,6 +290,9 @@ function showMessage(message, type) {
         messageDiv.remove();
     }, 5000);
 }
+
+
+loadPatients();
 
 /* ============================================
    API INTEGRATION NOTES
