@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Read port from environment variable (for Render/Railway/etc.)
+// Read port from environment variable
 var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
 builder.WebHost.UseUrls($"http://0.0.0.0:{port}");
 
@@ -27,39 +27,31 @@ var app = builder.Build();
 
 // Middleware
 app.UseCors("AllowAll");
-
-// Remove HTTPS redirection for cloud deployment (they handle SSL)
-// app.UseHttpsRedirection();
-
 app.UseAuthorization();
-
-// Serve static files
 app.UseStaticFiles();
 
-// SPA-style fallback to serve any .html file in wwwroot
-app.Use(async (context, next) =>
+// Explicitly map all your HTML pages
+var pages = new[] { "index", "doctors", "patients", "receptionists" };
+foreach (var page in pages)
 {
-    var path = context.Request.Path.Value;
-
-    // If request has no extension, try to serve a corresponding .html file
-    if (!System.IO.Path.HasExtension(path))
+    app.MapGet($"/{page}", async context =>
     {
-        var file = $"wwwroot{path}.html";
-        if (System.IO.File.Exists(file))
-        {
-            context.Response.ContentType = "text/html";
-            await context.Response.SendFileAsync(file);
-            return;
-        }
-    }
+        context.Response.ContentType = "text/html";
+        await context.Response.SendFileAsync($"wwwroot/{page}.html");
+    });
+}
 
-    await next();
+// Optionally redirect root to index.html
+app.MapGet("/", async context =>
+{
+    context.Response.ContentType = "text/html";
+    await context.Response.SendFileAsync("wwwroot/index.html");
 });
 
 // Map API endpoints
 app.MapControllers();
 
-// Apply migrations on startup (optional, auto-create tables)
+// Apply migrations on startup
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
